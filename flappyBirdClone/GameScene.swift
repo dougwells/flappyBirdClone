@@ -15,6 +15,7 @@ class GameScene: SKScene {
     var bird = SKSpriteNode()
     var background1 = SKSpriteNode()
     var background2 = SKSpriteNode()
+    var background3 = SKSpriteNode()
     
     // Like "viewDidLoad" method.  Scene did appear on screen
     override func didMove(to view: SKView) {
@@ -42,21 +43,37 @@ class GameScene: SKScene {
         background2 = SKSpriteNode(texture: backgroundTexture)
         background2.run(moveBackground)
         
+        /*
+        background3 = SKSpriteNode(texture: backgroundTexture)
+        background3.run(moveBackground)
+        */
+        
         
         
         //Position element. self=view contrlr, frame= frame in which items are contained, midX & midY = middle
-        bird.position = CGPoint(x: self.frame.midX, y: self.frame.midY)
+        bird.position = CGPoint(x: 0, y: self.frame.midY)
         
-        background1.position = CGPoint(x: self.frame.midX, y: self.frame.midY)
-        background1.size = CGSize(width: self.frame.width, height: self.frame.height)
-
+        background1.zPosition = -1
+        background1.position = CGPoint(x: 0, y: self.frame.midY)
+        background1.size = CGSize(width: backgroundTexture.size().width, height: self.frame.height)
+        self.addChild(background1)
         
-        background2.position = CGPoint(x: self.frame.maxX, y: self.frame.midY)
-        background2.size = CGSize(width: self.frame.width, height: self.frame.height)
+        
+        background2.zPosition = -1
+        background2.position = CGPoint(x: backgroundTexture.size().width, y: self.frame.midY)
+        background2.size = CGSize(width: backgroundTexture.size().width, height: self.frame.height)
+        self.addChild(background2)
+        
+        /*
+        background3.zPosition = -1
+        background3.position = CGPoint(x: 2*backgroundTexture.size().width, y: self.frame.midY)
+        background3.size = CGSize(width: backgroundTexture.size().width, height: self.frame.height)
+        self.addChild(background3)
+        */
         
         //add bird to the view controller
-        self.addChild(background1)
-        self.addChild(background2)
+        
+        
         self.addChild(bird)
 
 
