@@ -16,9 +16,14 @@ class GameScene: SKScene {
     // Like "viewDidLoad" method.  Scene did appear on screen
     override func didMove(to view: SKView) {
         
-        let birdTexture = SKTexture(imageNamed: "flappy1.png")
+        let birdTexture  = SKTexture(imageNamed: "flappy1.png")
+        let birdTexture2 = SKTexture(imageNamed: "flappy2.png")
+        
+        let animation = SKAction.animate(with: [birdTexture, birdTexture2], timePerFrame: 0.1)
+        let makeBirdFlap = SKAction.repeatForever(animation)
         
         bird = SKSpriteNode(texture: birdTexture)
+        bird.run(makeBirdFlap)
         
         //Position bird. self=view contrlr, frame= frame in which items are contained, midX & midY = middle
         bird.position = CGPoint(x: self.frame.midX, y: self.frame.midY)
