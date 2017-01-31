@@ -15,11 +15,16 @@ class GameScene: SKScene {
     var bird = SKSpriteNode()
     var background1 = SKSpriteNode()
     var background2 = SKSpriteNode()
+    let ground = SKNode()
+    var pipeFromAbove = SKSpriteNode()
+    var pipeFromBelow = SKSpriteNode()
     
     //Build game element textures
     let birdTexture  = SKTexture(imageNamed: "flappy1.png")
     let birdTexture2 = SKTexture(imageNamed: "flappy2.png")
     let backgroundTexture = SKTexture(imageNamed: "bg.png")
+    let pipeFromAboveTexture = SKTexture(imageNamed: "pipe1.png")
+    let pipeFromBelowTexture = SKTexture(imageNamed: "pipe2.png")
     
 // Like "viewDidLoad" method.  Scene did appear on screen
     override func didMove(to view: SKView) {
@@ -47,9 +52,14 @@ class GameScene: SKScene {
         background2 = SKSpriteNode(texture: backgroundTexture)
         background2.run(moveBackground)
         
+        pipeFromAbove = SKSpriteNode(texture: pipeFromAboveTexture)
+        //pipeFromAbove.run(moveBackground)
         
-        //Position element. self=view contrlr, frame= frame in which items are contained, midX & midY = middle
-        bird.position = CGPoint(x: 0, y: self.frame.midY)
+        pipeFromBelow = SKSpriteNode(texture: pipeFromBelowTexture)
+        
+        
+        //Position element. self=view controller, frame= frame in which items are contained, midX & midY = middle
+        bird.position = CGPoint(x: self.frame.midX, y: self.frame.midY)
         
         background1.zPosition = -1
         background1.position = CGPoint(x: 0, y: self.frame.midY)
@@ -62,7 +72,21 @@ class GameScene: SKScene {
         background2.size = CGSize(width: backgroundTexture.size().width, height: self.frame.height)
         self.addChild(background2)
         
+        
+        let pipeGap = bird.size.height * 2
+        
+        pipeFromAbove.position = CGPoint(x: self.frame.midX, y: self.frame.midY + 0.5 * (pipeFromAboveTexture.size().height + pipeGap))
+        self.addChild(pipeFromAbove)
+        
+        pipeFromBelow.position = CGPoint(x: self.frame.midX, y: self.frame.midY - (0.5 * pipeFromBelowTexture.size().height + pipeGap))
+        self.addChild(pipeFromBelow)
+        
         self.addChild(bird)
+        
+        ground.position = CGPoint(x: 0, y: -self.frame.height/2)
+        ground.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: self.frame.width, height: 1))
+        ground.physicsBody!.isDynamic = false //gravity. Ground should stay in place
+        self.addChild(ground)
 
 
         
@@ -72,8 +96,12 @@ class GameScene: SKScene {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         bird.physicsBody = SKPhysicsBody(circleOfRadius: birdTexture.size().height/2)
-        bird.physicsBody!.isDynamic = true  //not needed. default is true
-        bird.physicsBody!.applyImpulse(CGVector(dx: 0, dy: 50))  //move up 50 pixels
+        
+        bird.physicsBody!.isDynamic = true  //gravity. not needed. default is true
+        
+        bird.physicsBody!.velocity = CGVector(dx: 0, dy: 0) //total distance of animation per second
+        
+        bird.physicsBody!.applyImpulse(CGVector(dx: 0, dy: 60))  //move up 50 pixels
         
     }
     
