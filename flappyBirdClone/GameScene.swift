@@ -75,10 +75,16 @@ class GameScene: SKScene {
         
         let pipeGap = bird.size.height * 2
         
-        pipeFromAbove.position = CGPoint(x: self.frame.midX, y: self.frame.midY + 0.5 * (pipeFromAboveTexture.size().height + pipeGap))
+        //random movement from 0 to half the frame height
+        let movementAmount = arc4random() % UInt32(self.frame.height/2)
+        
+        //pipeOffset - takes movement to -1/4 to +1/4 of frame height
+        let pipeOffset = CGFloat(movementAmount) - self.frame.height/4
+        
+        pipeFromAbove.position = CGPoint(x: self.frame.midX, y: self.frame.midY + 0.5 * pipeFromAboveTexture.size().height + pipeGap + pipeOffset)
         self.addChild(pipeFromAbove)
         
-        pipeFromBelow.position = CGPoint(x: self.frame.midX, y: self.frame.midY - (0.5 * pipeFromBelowTexture.size().height + pipeGap))
+        pipeFromBelow.position = CGPoint(x: self.frame.midX, y: self.frame.midY - 0.5 * pipeFromBelowTexture.size().height - pipeGap + pipeOffset)
         self.addChild(pipeFromBelow)
         
         self.addChild(bird)
