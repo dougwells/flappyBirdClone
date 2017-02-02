@@ -11,6 +11,8 @@ import GameplayKit
 
 class GameScene: SKScene {
     
+
+    
     //Define game elements
     var bird = SKSpriteNode()
     var background1 = SKSpriteNode()
@@ -26,10 +28,40 @@ class GameScene: SKScene {
     let pipeFromAboveTexture = SKTexture(imageNamed: "pipe1.png")
     let pipeFromBelowTexture = SKTexture(imageNamed: "pipe2.png")
     
+    func makePipes() {
+        
+        pipeFromAbove = SKSpriteNode(texture: pipeFromAboveTexture)
+        pipeFromBelow = SKSpriteNode(texture: pipeFromBelowTexture)
+        
+        let pipeGap = bird.size.height * 2
+        
+        //random movement from 0 to half the frame height
+        let movementAmount = arc4random() % UInt32(self.frame.height/2)
+        
+        //pipeOffset - takes movement to -1/4 to +1/4 of frame height
+        let pipeOffset = CGFloat(movementAmount) - self.frame.height/4
+        
+        //animate pipes (make duration relative to screen width)
+        let movePipes = SKAction.move(by: CGVector(dx: -2*self.frame.width * 1.5, dy:0), duration: TimeInterval(self.frame.width/50) )
+        
+        pipeFromAbove.position = CGPoint(x: self.frame.maxX + 0.5 * self.frame.width, y: self.frame.midY + 0.5 * pipeFromAboveTexture.size().height + pipeGap + pipeOffset)
+        pipeFromAbove.run(movePipes)
+        self.addChild(pipeFromAbove)
+        
+        pipeFromBelow.position = CGPoint(x: self.frame.maxX + 0.5 * self.frame.width, y: self.frame.midY - 0.5 * pipeFromBelowTexture.size().height - pipeGap + pipeOffset)
+        pipeFromBelow.run(movePipes)
+        self.addChild(self.pipeFromBelow)
+
+        
+    } //End makePipes
+    
+    
 // Like "viewDidLoad" method.  Scene did appear on screen
     override func didMove(to view: SKView) {
         
-
+        //Timer for randomly creating pipes every 3 seconds
+        
+        _ = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.makePipes), userInfo: nil, repeats: true)
         
         //.animate --> array of images to scroll thru each time period
         
@@ -42,8 +74,7 @@ class GameScene: SKScene {
                 let resetAction = SKAction.move(by: CGVector(dx:backgroundTexture.size().width, dy:0), duration: 0)
                 let moveBackground = SKAction.repeatForever(SKAction.sequence([moveAction, resetAction]))
         
-            //animate background (make duration relative to screen width)
-                let movePipes = SKAction.move(by: CGVector(dx: -2*self.frame.width * 1.5, dy:0), duration: TimeInterval(self.frame.width/50) )
+
         
         //build element & run animations
         bird = SKSpriteNode(texture: birdTexture)
@@ -54,11 +85,6 @@ class GameScene: SKScene {
         
         background2 = SKSpriteNode(texture: backgroundTexture)
         background2.run(moveBackground)
-        
-        pipeFromAbove = SKSpriteNode(texture: pipeFromAboveTexture)
-        //pipeFromAbove.run(moveBackground)
-        
-        pipeFromBelow = SKSpriteNode(texture: pipeFromBelowTexture)
         
         
         //Position element. self=view controller, frame= frame in which items are contained, midX & midY = middle
@@ -74,23 +100,6 @@ class GameScene: SKScene {
         background2.position = CGPoint(x: backgroundTexture.size().width, y: self.frame.midY)
         background2.size = CGSize(width: backgroundTexture.size().width, height: self.frame.height)
         self.addChild(background2)
-        
-        
-        let pipeGap = bird.size.height * 2
-        
-        //random movement from 0 to half the frame height
-        let movementAmount = arc4random() % UInt32(self.frame.height/2)
-        
-        //pipeOffset - takes movement to -1/4 to +1/4 of frame height
-        let pipeOffset = CGFloat(movementAmount) - self.frame.height/4
-        
-        pipeFromAbove.position = CGPoint(x: self.frame.maxX + 0.5 * self.frame.width, y: self.frame.midY + 0.5 * pipeFromAboveTexture.size().height + pipeGap + pipeOffset)
-        pipeFromAbove.run(movePipes)
-        self.addChild(pipeFromAbove)
-        
-        pipeFromBelow.position = CGPoint(x: self.frame.maxX + 0.5 * self.frame.width, y: self.frame.midY - 0.5 * pipeFromBelowTexture.size().height - pipeGap + pipeOffset)
-        pipeFromBelow.run(movePipes)
-        self.addChild(pipeFromBelow)
         
         self.addChild(bird)
         
