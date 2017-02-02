@@ -9,9 +9,10 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
-
+    //set gameOver to false
+    var gameOver = false
     
     //Define game elements
     var bird = SKSpriteNode()
@@ -28,10 +29,17 @@ class GameScene: SKScene {
     let pipeFromAboveTexture = SKTexture(imageNamed: "pipe1.png")
     let pipeFromBelowTexture = SKTexture(imageNamed: "pipe2.png")
     
+    //Collition - Enums, UI32 so values must be 2^x (ie, 1, 2, 4, 8, 16 etc)
+    enum ColliderType: UInt32 {
+        case Bird = 1
+        case Object = 2
+    }
+    
     func makePipes() {
         
         pipeFromAbove = SKSpriteNode(texture: pipeFromAboveTexture)
         pipeFromBelow = SKSpriteNode(texture: pipeFromBelowTexture)
+
         
         let pipeGap = bird.size.height * 2
         
@@ -46,18 +54,49 @@ class GameScene: SKScene {
         
         pipeFromAbove.position = CGPoint(x: self.frame.maxX + 0.5 * self.frame.width, y: self.frame.midY + 0.5 * pipeFromAboveTexture.size().height + pipeGap + pipeOffset)
         pipeFromAbove.run(movePipes)
+        
+        //Setup physics body for pipes (must set gravity to false)
+        pipeFromAbove.physicsBody = SKPhysicsBody(rectangleOf: pipeFromAboveTexture.size())
+        pipeFromAbove.physicsBody?.isDynamic = false
+        
+        //Set up collision properties for pipe
+        pipeFromAbove.physicsBody!.contactTestBitMask = ColliderType.Object.rawValue
+        pipeFromAbove.physicsBody!.categoryBitMask = ColliderType.Object.rawValue
+        pipeFromAbove.physicsBody!.collisionBitMask = ColliderType.Object.rawValue
+        
         self.addChild(pipeFromAbove)
         
         pipeFromBelow.position = CGPoint(x: self.frame.maxX + 0.5 * self.frame.width, y: self.frame.midY - 0.5 * pipeFromBelowTexture.size().height - pipeGap + pipeOffset)
         pipeFromBelow.run(movePipes)
+        
+        
+        //Setup physics body for pipes (must set gravity to false)
+        pipeFromBelow.physicsBody = SKPhysicsBody(rectangleOf: pipeFromBelowTexture.size())
+        pipeFromBelow.physicsBody?.isDynamic = false
+        
+        //Set up collision properties for pipe
+        pipeFromBelow.physicsBody!.contactTestBitMask = ColliderType.Object.rawValue
+        pipeFromBelow.physicsBody!.categoryBitMask = ColliderType.Object.rawValue
+        pipeFromBelow.physicsBody!.collisionBitMask = ColliderType.Object.rawValue
+        
         self.addChild(self.pipeFromBelow)
 
         
     } //End makePipes
     
     
-// Like "viewDidLoad" method.  Scene did appear on screen
+    // didBegin triggers when collision detected
+    func didBegin(_ contact: SKPhysicsContact) {
+        print("Collision ... ouch!!")
+        self.speed = 0
+        gameOver = true
+    }
+    
+    
+    // Like "viewDidLoad" method.  Scene did appear on screen
     override func didMove(to view: SKView) {
+        
+        self.physicsWorld.contactDelegate = self
         
         //Timer for randomly creating pipes every 3 seconds
         
@@ -74,11 +113,25 @@ class GameScene: SKScene {
                 let resetAction = SKAction.move(by: CGVector(dx:backgroundTexture.size().width, dy:0), duration: 0)
                 let moveBackground = SKAction.repeatForever(SKAction.sequence([moveAction, resetAction]))
         
-
-        
         //build element & run animations
         bird = SKSpriteNode(texture: birdTexture)
+        bird.physicsBody = SKPhysicsBody(circleOfRadius: birdTexture.size().height/2)
+        bird.physicsBody?.isDynamic = false //bird stays in middle of screen till touches begin
         bird.run(makeBirdFlap)
+        
+        //Set up contact interactions w/pipe & ground (only 1st one required)
+        
+            // contactTestBitMask: Required. Detects collisions between like objects
+            // (all set to "Object" in flappybird)
+        
+            bird.physicsBody!.contactTestBitMask = ColliderType.Object.rawValue
+        
+            // categoryBitMask: Not required. Category that a node falls into
+            bird.physicsBody!.categoryBitMask = ColliderType.Bird.rawValue
+        
+            // collisonBitMask: Not required. Can objects pass thru each other?
+            bird.physicsBody!.collisionBitMask = ColliderType.Bird.rawValue
+
         
         background1 = SKSpriteNode(texture: backgroundTexture)
         background1.run(moveBackground)
@@ -106,22 +159,29 @@ class GameScene: SKScene {
         ground.position = CGPoint(x: 0, y: -self.frame.height/2)
         ground.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: self.frame.width, height: 1))
         ground.physicsBody!.isDynamic = false //gravity. Ground should stay in place
+        
+        ground.physicsBody!.contactTestBitMask = ColliderType.Object.rawValue
+        ground.physicsBody!.categoryBitMask = ColliderType.Object.rawValue
+        ground.physicsBody!.collisionBitMask = ColliderType.Object.rawValue
+        
         self.addChild(ground)
 
-
-        
-    }
+    } //end function didMove
     
     //user touches the screen
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
-        bird.physicsBody = SKPhysicsBody(circleOfRadius: birdTexture.size().height/2)
+        if !gameOver {
         
-        bird.physicsBody!.isDynamic = true  //gravity. not needed. default is true
+            bird.physicsBody = SKPhysicsBody(circleOfRadius: birdTexture.size().height/2)
         
-        bird.physicsBody!.velocity = CGVector(dx: 0, dy: 0) //total distance of animation per second
+            bird.physicsBody!.isDynamic = true  //gravity. not needed. default is true
         
-        bird.physicsBody!.applyImpulse(CGVector(dx: 0, dy: 60))  //move up 50 pixels
+            bird.physicsBody!.velocity = CGVector(dx: 0, dy: 0) //total distance of animation per second
+        
+            bird.physicsBody!.applyImpulse(CGVector(dx: 0, dy: 60))  //move up 50 pixels
+            
+        }
         
     }
     
