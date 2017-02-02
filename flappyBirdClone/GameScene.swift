@@ -33,15 +33,17 @@ class GameScene: SKScene {
         
         //.animate --> array of images to scroll thru each time period
         
-            //bird
+            //animate bird
                 let animation = SKAction.animate(with: [birdTexture, birdTexture2], timePerFrame: 0.1)
                 let makeBirdFlap = SKAction.repeatForever(animation)
         
-            //background
+            //animate background
                 let moveAction = SKAction.move(by: CGVector(dx:-backgroundTexture.size().width, dy:0), duration: 5)
                 let resetAction = SKAction.move(by: CGVector(dx:backgroundTexture.size().width, dy:0), duration: 0)
                 let moveBackground = SKAction.repeatForever(SKAction.sequence([moveAction, resetAction]))
-                let movePipes = SKAction.move(by: CGVector(dx: -self.frame.width * 1.5, dy:0), duration: TimeInterval(self.frame.width/50) )
+        
+            //animate background (make duration relative to screen width)
+                let movePipes = SKAction.move(by: CGVector(dx: -2*self.frame.width * 1.5, dy:0), duration: TimeInterval(self.frame.width/50) )
         
         //build element & run animations
         bird = SKSpriteNode(texture: birdTexture)
@@ -82,11 +84,11 @@ class GameScene: SKScene {
         //pipeOffset - takes movement to -1/4 to +1/4 of frame height
         let pipeOffset = CGFloat(movementAmount) - self.frame.height/4
         
-        pipeFromAbove.position = CGPoint(x: self.frame.maxX, y: self.frame.midY + 0.5 * pipeFromAboveTexture.size().height + pipeGap + pipeOffset)
+        pipeFromAbove.position = CGPoint(x: self.frame.maxX + 0.5 * self.frame.width, y: self.frame.midY + 0.5 * pipeFromAboveTexture.size().height + pipeGap + pipeOffset)
         pipeFromAbove.run(movePipes)
         self.addChild(pipeFromAbove)
         
-        pipeFromBelow.position = CGPoint(x: self.frame.maxX, y: self.frame.midY - 0.5 * pipeFromBelowTexture.size().height - pipeGap + pipeOffset)
+        pipeFromBelow.position = CGPoint(x: self.frame.maxX + 0.5 * self.frame.width, y: self.frame.midY - 0.5 * pipeFromBelowTexture.size().height - pipeGap + pipeOffset)
         pipeFromBelow.run(movePipes)
         self.addChild(pipeFromBelow)
         
