@@ -33,6 +33,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     enum ColliderType: UInt32 {
         case Bird = 1
         case Object = 2
+        case Gap = 4
     }
     
     func makePipes() {
@@ -80,6 +81,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pipeFromBelow.physicsBody!.collisionBitMask = ColliderType.Object.rawValue
         
         self.addChild(self.pipeFromBelow)
+        
+    //Create "gap" object to detect passing between pipes for scoring
+        
+        let gap = SKNode()  //Needed to detect when bird flies between pipes
+        gap.position = CGPoint(x: self.frame.maxX + 0.5 * self.frame.width, y: self.frame.midY + pipeOffset)  //x position same as pipes
+        
+        gap.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: pipeFromAboveTexture.size().width, height: pipeGap))
+        
+        gap.physicsBody?.isDynamic = false //no gravity
+        
+        gap.run(movePipes)
+        
+        gap.physicsBody!.contactTestBitMask = ColliderType.Bird.rawValue
+        gap.physicsBody!.categoryBitMask = ColliderType.Gap.rawValue
+        gap.physicsBody!.collisionBitMask = ColliderType.Gap.rawValue
+        
+        self.addChild(gap)
+        
 
         
     } //End makePipes
@@ -87,9 +106,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // didBegin triggers when collision detected
     func didBegin(_ contact: SKPhysicsContact) {
-        print("Collision ... ouch!!")
-        self.speed = 0
-        gameOver = true
+        
+        if contact.bodyA.categoryBitMask == ColliderType.Gap.rawValue || contact.bodyB.categoryBitMask == ColliderType.Gap.rawValue {
+            
+            print("Passed thru gap.  Add 1 to score")
+            
+        } else {
+        
+            print("Collision ... ouch!!")
+            //self.speed = 0
+            //gameOver = true
+        }
     }
     
     
@@ -179,7 +206,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
             bird.physicsBody!.velocity = CGVector(dx: 0, dy: 0) //total distance of animation per second
         
-            bird.physicsBody!.applyImpulse(CGVector(dx: 0, dy: 60))  //move up 50 pixels
+            bird.physicsBody!.applyImpulse(CGVector(dx: 0, dy: 60))  //move up 60 pixels
             
         }
         
