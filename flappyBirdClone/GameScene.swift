@@ -87,7 +87,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let gap = SKNode()  //Needed to detect when bird flies between pipes
         gap.position = CGPoint(x: self.frame.maxX + 0.5 * self.frame.width, y: self.frame.midY + pipeOffset)  //x position same as pipes
         
-        gap.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: pipeFromAboveTexture.size().width, height: pipeGap))
+        gap.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: pipeFromAboveTexture.size().width, height: 2*pipeGap))
         
         gap.physicsBody?.isDynamic = false //no gravity
         
@@ -99,25 +99,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.addChild(gap)
         
-
-        
     } //End makePipes
     
     
     // didBegin triggers when collision detected
     func didBegin(_ contact: SKPhysicsContact) {
         
-        if contact.bodyA.categoryBitMask == ColliderType.Gap.rawValue || contact.bodyB.categoryBitMask == ColliderType.Gap.rawValue {
-            
-            print("Passed thru gap.  Add 1 to score")
-            
-        } else {
+        if gameOver == false {
         
-            print("Collision ... ouch!!")
-            //self.speed = 0
-            //gameOver = true
+            if contact.bodyA.categoryBitMask == ColliderType.Gap.rawValue || contact.bodyB.categoryBitMask == ColliderType.Gap.rawValue {
+            
+                print("Passed thru gap.  Add 1 to score")
+            
+            } else {
+        
+                print("Collision ... ouch!!")
+                //self.speed = 0
+                //gameOver = true
+            }
         }
-    }
+    } //end fn didBegin
     
     
     // Like "viewDidLoad" method.  Scene did appear on screen
