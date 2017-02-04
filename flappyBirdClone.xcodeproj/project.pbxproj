@@ -20,6 +20,7 @@
 		706C620C1E3F7472001C7684 /* flappy2.png in Resources */ = {isa = PBXBuildFile; fileRef = 706C62071E3F7472001C7684 /* flappy2.png */; };
 		706C620D1E3F7472001C7684 /* flappy1.png in Resources */ = {isa = PBXBuildFile; fileRef = 706C62081E3F7472001C7684 /* flappy1.png */; };
 		706C620E1E3F7472001C7684 /* bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 706C62091E3F7472001C7684 /* bg.png */; };
+		70FE3E2E1E46553C002A85EF /* lego.png in Resources */ = {isa = PBXBuildFile; fileRef = 70FE3E2D1E46553C002A85EF /* lego.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		706C62071E3F7472001C7684 /* flappy2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flappy2.png; sourceTree = "<group>"; };
 		706C62081E3F7472001C7684 /* flappy1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flappy1.png; sourceTree = "<group>"; };
 		706C62091E3F7472001C7684 /* bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bg.png; sourceTree = "<group>"; };
+		70FE3E2D1E46553C002A85EF /* lego.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lego.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +86,7 @@
 				706C62071E3F7472001C7684 /* flappy2.png */,
 				706C62081E3F7472001C7684 /* flappy1.png */,
 				706C62091E3F7472001C7684 /* bg.png */,
+				70FE3E2D1E46553C002A85EF /* lego.png */,
 			);
 			path = flappyBirdClone;
 			sourceTree = "<group>";
@@ -152,6 +155,7 @@
 				706C61F91E3E729C001C7684 /* Main.storyboard in Resources */,
 				706C61F01E3E729C001C7684 /* GameScene.sks in Resources */,
 				706C620D1E3F7472001C7684 /* flappy1.png in Resources */,
+				70FE3E2E1E46553C002A85EF /* lego.png in Resources */,
 				706C620A1E3F7472001C7684 /* pipe2.png in Resources */,
 				706C61FB1E3E729C001C7684 /* Assets.xcassets in Resources */,
 				706C620C1E3F7472001C7684 /* flappy2.png in Resources */,
@@ -332,6 +336,7 @@
 				706C62041E3E729C001C7684 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

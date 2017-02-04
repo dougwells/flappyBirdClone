@@ -85,6 +85,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //Create "gap" object to detect passing between pipes for scoring
         
         let gap = SKNode()  //Needed to detect when bird flies between pipes
+
         gap.position = CGPoint(x: self.frame.maxX + 0.5 * self.frame.width, y: self.frame.midY + pipeOffset)  //x position same as pipes
         
         gap.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: pipeFromAboveTexture.size().width, height: 2*pipeGap))
