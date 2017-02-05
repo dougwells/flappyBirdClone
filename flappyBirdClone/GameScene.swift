@@ -34,6 +34,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case Bird = 1
         case Object = 2
         case Gap = 4
+        case None = 8
     }
     
     func makePipes() {
@@ -61,9 +62,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pipeFromAbove.physicsBody?.isDynamic = false
         
         //Set up collision properties for pipe
-        pipeFromAbove.physicsBody!.contactTestBitMask = ColliderType.Object.rawValue
         pipeFromAbove.physicsBody!.categoryBitMask = ColliderType.Object.rawValue
-        pipeFromAbove.physicsBody!.collisionBitMask = ColliderType.Object.rawValue
+        pipeFromAbove.physicsBody!.contactTestBitMask = ColliderType.Bird.rawValue
+        pipeFromAbove.physicsBody!.collisionBitMask = ColliderType.Bird.rawValue
         
         self.addChild(pipeFromAbove)
         
@@ -76,9 +77,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pipeFromBelow.physicsBody?.isDynamic = false
         
         //Set up collision properties for pipe
-        pipeFromBelow.physicsBody!.contactTestBitMask = ColliderType.Object.rawValue
         pipeFromBelow.physicsBody!.categoryBitMask = ColliderType.Object.rawValue
-        pipeFromBelow.physicsBody!.collisionBitMask = ColliderType.Object.rawValue
+        pipeFromBelow.physicsBody!.contactTestBitMask = ColliderType.Bird.rawValue
+        pipeFromBelow.physicsBody!.collisionBitMask = ColliderType.Bird.rawValue
         
         self.addChild(self.pipeFromBelow)
         
@@ -94,10 +95,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         gap.run(movePipes)
         
-        gap.physicsBody!.contactTestBitMask = ColliderType.Bird.rawValue
-        gap.physicsBody!.categoryBitMask = ColliderType.Gap.rawValue
-        gap.physicsBody!.collisionBitMask = ColliderType.Gap.rawValue
-        
+        gap.physicsBody!.categoryBitMask = ColliderType.Gap.rawValue      // Category is Gap
+        gap.physicsBody!.contactTestBitMask = ColliderType.Bird.rawValue  //Notify us if contact with bird
+        gap.physicsBody!.collisionBitMask = ColliderType.None.rawValue  //Physics engine controls reaction w/None
         self.addChild(gap)
         
     } //End makePipes
@@ -155,16 +155,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //Set up contact interactions w/pipe & ground (only 1st one required)
         
-            // contactTestBitMask: Required. Detects collisions between like objects
-            // (all set to "Object" in flappybird)
-        
-            bird.physicsBody!.contactTestBitMask = ColliderType.Object.rawValue
-        
-            // categoryBitMask: Not required. Category that a node falls into
-            bird.physicsBody!.categoryBitMask = ColliderType.Bird.rawValue
-        
-            // collisonBitMask: Not required. Can objects pass thru each other?
-            bird.physicsBody!.collisionBitMask = ColliderType.Bird.rawValue
+        bird.physicsBody!.categoryBitMask = ColliderType.Bird.rawValue
+        bird.physicsBody!.contactTestBitMask = ColliderType.Object.rawValue
+        bird.physicsBody!.collisionBitMask = ColliderType.Object.rawValue
         
             self.addChild(bird)
 
@@ -196,9 +189,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ground.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: self.frame.width, height: 1))
         ground.physicsBody!.isDynamic = false //gravity. Ground should stay in place
         
-        ground.physicsBody!.contactTestBitMask = ColliderType.Object.rawValue
         ground.physicsBody!.categoryBitMask = ColliderType.Object.rawValue
-        ground.physicsBody!.collisionBitMask = ColliderType.Object.rawValue
+        ground.physicsBody!.contactTestBitMask = ColliderType.Bird.rawValue
+        ground.physicsBody!.collisionBitMask = ColliderType.Bird.rawValue
         
         self.addChild(ground)
 
