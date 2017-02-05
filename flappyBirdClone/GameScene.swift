@@ -110,13 +110,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
             if contact.bodyA.categoryBitMask == ColliderType.Gap.rawValue || contact.bodyB.categoryBitMask == ColliderType.Gap.rawValue {
             
-                print("Passed thru gap.  Add 1 to score")
+                print("Passed thru gap. Body A = \(contact.bodyA.contactTestBitMask), \(contact.bodyA.categoryBitMask), \(contact.bodyA.collisionBitMask), Body B = \(contact.bodyB.contactTestBitMask), \(contact.bodyB.categoryBitMask), \(contact.bodyB.collisionBitMask)")
             
             } else {
         
-                print("Collision ... ouch!!")
-                //self.speed = 0
-                //gameOver = true
+                print("Collision. Body A = \(contact.bodyA.contactTestBitMask), \(contact.bodyA.categoryBitMask), \(contact.bodyA.collisionBitMask), Body B = \(contact.bodyB.contactTestBitMask), \(contact.bodyB.categoryBitMask), \(contact.bodyB.collisionBitMask)")
+                self.speed = 0
+                gameOver = true
             }
         }
     } //end fn didBegin
@@ -126,6 +126,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         
         self.physicsWorld.contactDelegate = self
+        setUpGame()
+        
+    } //End didMove function
+    
+    func setUpGame() {
         
         //Timer for randomly creating pipes every 3 seconds
         
@@ -160,6 +165,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
             // collisonBitMask: Not required. Can objects pass thru each other?
             bird.physicsBody!.collisionBitMask = ColliderType.Bird.rawValue
+        
+            self.addChild(bird)
 
         
         background1 = SKSpriteNode(texture: backgroundTexture)
@@ -183,7 +190,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         background2.size = CGSize(width: backgroundTexture.size().width, height: self.frame.height)
         self.addChild(background2)
         
-        self.addChild(bird)
+
         
         ground.position = CGPoint(x: 0, y: -self.frame.height/2)
         ground.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: self.frame.width, height: 1))
@@ -195,14 +202,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.addChild(ground)
 
-    } //end function didMove
+    } //end setUpGame
     
     //user touches the screen
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         if !gameOver {
-        
-            bird.physicsBody = SKPhysicsBody(circleOfRadius: birdTexture.size().height/2)
         
             bird.physicsBody!.isDynamic = true  //gravity. not needed. default is true
         
